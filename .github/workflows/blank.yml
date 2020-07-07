@@ -1,0 +1,61 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    
+    # StaticUI - workflow part
+    - name: StaticUI | test
+      run: echo 'StaticUI test - TODO'
+    - name: StaticUI | deploy to aws (s3)
+      run: echo 'StaticUI s3 deploy - TODO'
+    
+    # FetchTeamLambda - workflow part
+    - name: FetchTeamLambda | test
+      run: echo 'FetchTeamLambda test - TODO'
+    - name: FetchTeamLambda | create zip
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r ./fetch-team-lambda/package.zip ./fetch-team-lambda/
+    - name: FetchTeamLambda | deploy to aws (lambda)
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: eu-west-2
+        function_name: betboard-fetch-team-lambda
+        zip_file: fetch-team-lambda/package.zip
+    
+    # UpdateUiLambda - workflow part
+    - name: UpdateUiLambda | test
+      run: echo 'UpdateUiLambda test - TODO'
+    - name: UpdateUiLambda | create zip
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r ./deploy-ui-lambda/package.zip ./deploy-ui-lambda/
+    - name: UpdateUiLambda | deploy to aws (lambda)
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: eu-west-2
+        function_name: betboard-deploy-ui-lambda
+        zip_file: deploy-ui-lambda/package.zip
