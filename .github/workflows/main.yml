@@ -34,8 +34,7 @@ jobs:
     - name: FetchTeamLambda | create zip
       uses: montudor/action-zip@v0.1.0
       with:
-        entrypoint: ./fetch-team-lambda
-        args: zip -qq -r ./package.zip ./*
+        args: cd fetch-team-lambda; zip -qq -r ./package.zip ./*
     - name: FetchTeamLambda | deploy to aws (lambda)
       uses: appleboy/lambda-action@master
       with:
@@ -51,8 +50,7 @@ jobs:
     - name: UpdateUiLambda | create zip
       uses: montudor/action-zip@v0.1.0
       with:
-        entrypoint: ./update-team-lambda
-        args: zip -qq -r ./package.zip ./*
+        args: cd update-team-lambda; zip -qq -r ./package.zip ./*
     - name: UpdateUiLambda | deploy to aws (lambda)
       uses: appleboy/lambda-action@master
       with:
