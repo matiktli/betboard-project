@@ -31,12 +31,11 @@ jobs:
     # FetchTeamLambda - workflow part
     - name: FetchTeamLambda | test
       run: echo 'FetchTeamLambda test - TODO'
+      run: cd fetch-team-data
     - name: FetchTeamLambda | create zip
-      run: cd fetch-teamlambda
       uses: montudor/action-zip@v0.1.0
       with:
         args: zip -qq -r ./package.zip ./*
-      run: cd ..
     - name: FetchTeamLambda | deploy to aws (lambda)
       uses: appleboy/lambda-action@master
       with:
@@ -49,12 +48,11 @@ jobs:
     # UpdateUiLambda - workflow part
     - name: UpdateUiLambda | test
       run: echo 'UpdateUiLambda test - TODO'
-    - name: UpdateUiLambda | create zip
       run: cd update-ui-lambda
+    - name: UpdateUiLambda | create zip
       uses: montudor/action-zip@v0.1.0
       with:
         args: zip -qq -r ./package.zip ./*
-      run: cd ..
     - name: UpdateUiLambda | deploy to aws (lambda)
       uses: appleboy/lambda-action@master
       with:
