@@ -31,7 +31,7 @@ jobs:
     # FetchTeamLambda - workflow part
     - name: FetchTeamLambda | test
       run: echo 'FetchTeamLambda test - TODO'
-    - run: cd fetch-team-data
+    - run: cd fetch-team-lambda
     - name: FetchTeamLambda | create zip
       uses: montudor/action-zip@v0.1.0
       with:
