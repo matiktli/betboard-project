@@ -31,7 +31,7 @@ jobs:
     # FetchTeamLambda - workflow part
     - name: FetchTeamLambda | test
       run: echo 'FetchTeamLambda test - TODO'
-      run: cd fetch-team-data
+    - run: cd fetch-team-data
     - name: FetchTeamLambda | create zip
       uses: montudor/action-zip@v0.1.0
       with:
@@ -48,7 +48,7 @@ jobs:
     # UpdateUiLambda - workflow part
     - name: UpdateUiLambda | test
       run: echo 'UpdateUiLambda test - TODO'
-      run: cd update-ui-lambda
+    - run: cd update-ui-lambda
     - name: UpdateUiLambda | create zip
       uses: montudor/action-zip@v0.1.0
       with:
