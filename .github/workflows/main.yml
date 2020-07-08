@@ -33,8 +33,8 @@ jobs:
       run: echo 'FetchTeamLambda test - TODO'
     - name: FetchTeamLambda | create zip
       uses: montudor/action-zip@v0.1.0
-      working-directory: ./fetch-team-lambda
       with:
+        entrypoint: ./fetch-team-lambda
         args: zip -qq -r ./package.zip ./*
     - name: FetchTeamLambda | deploy to aws (lambda)
       uses: appleboy/lambda-action@master
@@ -50,8 +50,8 @@ jobs:
       run: echo 'UpdateUiLambda test - TODO'
     - name: UpdateUiLambda | create zip
       uses: montudor/action-zip@v0.1.0
-      working-directory: ./update-ui-lambda
       with:
+        entrypoint: ./update-team-lambda
         args: zip -qq -r ./package.zip ./*
     - name: UpdateUiLambda | deploy to aws (lambda)
       uses: appleboy/lambda-action@master
