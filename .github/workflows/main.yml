@@ -26,7 +26,7 @@ jobs:
     - name: StaticUI | test
       run: echo 'StaticUI test - TODO'
     - name: StaticUI | build
-      run: npm install; npm run build
+      run: cd betboard-ui; npm install; npm run build
     - name: StaticUI | deploy to aws (s3)
       uses: shallwefootball/s3-upload-action@master
       with:
