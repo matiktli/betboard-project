@@ -1,0 +1,41 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Template responsible for creation of dynamo-db part",
+    "Outputs": {},
+    "Parameters": {
+        "Environment": {
+            "AllowedValues": [
+                "prod",
+                "sbox",
+                "local"
+            ],
+            "Default": "prod",
+            "Description": "Enter environment name, by default prod.",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "todo-name": {
+            "Properties": {
+                "AttributeDefinitions": [
+                    "todo"
+                ],
+                "BillingMode": "PAY_PER_REQUEST",
+                "GlobalSecondaryIndexes": [
+                    "todo"
+                ],
+                "KeySchema": [
+                    "todo"
+                ],
+                "LocalSecondaryIndexes": [
+                    "todo "
+                ],
+                "TableName": "todo",
+                "Tags": [
+                    "betboard-project"
+                ]
+            },
+            "Type": "AWS::DynamoDB::Table"
+        }
+    }
+}
