@@ -25,9 +25,16 @@ jobs:
     # StaticUI - workflow part
     - name: StaticUI | test
       run: echo 'StaticUI test - TODO'
+    - name: StaticUI | build
+      run: npm install
+      run: npm run build
     - name: StaticUI | deploy to aws (s3)
-      run: echo 'StaticUI s3 deploy - TODO'
-    
+      uses: shallwefootball/s3-upload-action@master
+      with:
+        aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_bucket: www.iammatkit.com
+        source_dir: 'betboard-ui/build/*'
     # FetchTeamLambda - workflow part
     - name: FetchTeamLambda | test
       run: echo 'FetchTeamLambda test - TODO'
