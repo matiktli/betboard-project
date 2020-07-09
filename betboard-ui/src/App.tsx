@@ -8,15 +8,18 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+        "I have a page in simple html, I am programmer now"
         </p>
+        <i className="Citate-owner">
+        M. Kitli
+        </i>
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://github.com/matiktli"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          My Git
         </a>
       </header>
     </div>
