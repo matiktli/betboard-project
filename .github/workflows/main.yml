@@ -33,7 +33,7 @@ jobs:
         aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_bucket: www.iammatkit.com
-        source_dir: 'betboard-ui/build/*'
+        source_dir: 'betboard-ui/build/'
     # FetchTeamLambda - workflow part
     - name: FetchTeamLambda | test
       run: echo 'FetchTeamLambda test - TODO'
