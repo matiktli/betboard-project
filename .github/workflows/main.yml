@@ -37,19 +37,48 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'eu-west-2'
         SOURCE_DIR: 'betboard-ui/build/'
-    # FetchTeamLambda - workflow part
-    - name: FetchTeamLambda | test
-      run: echo 'FetchTeamLambda test - TODO'
-    - name: FetchTeamLambda | create zip
+
+    # FetchMatchStatsLambda - workflow part
+    - name: FetchMatchStatsLambda | test
+      run: echo 'FetchMatchStatsLambda test - TODO'
+    - name: FetchMatchStatsLambda | create zip
       run: sh ./infra/sh/zip-lambda.sh fetch-team-lambda
-    - name: FetchTeamLambda | deploy to aws (lambda)
+    - name: FetchMatchStatsLambda | deploy to aws (lambda)
       uses: appleboy/lambda-action@master
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_region: eu-west-2
-        function_name: betboard-fetch-team-lambda
-        zip_file: fetch-team-lambda/package.zip
+        function_name: betboard-fetch-match-stats-lambda
+        zip_file: lambda/fetch-match-stats-lambda/package.zip
+
+    # FetchMatchTrendsLambda - workflow part
+    - name: FetchMatchTrendsLambda | test
+      run: echo 'FetchMatchTrendsLambda test - TODO'
+    - name: FetchMatchTrendsLambda | create zip
+      run: sh ./infra/sh/zip-lambda.sh fetch-team-lambda
+    - name: FetchMatchTrendsLambda | deploy to aws (lambda)
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: eu-west-2
+        function_name: betboard-fetch-match-trends-lambda
+        zip_file: lambda/fetch-match-trends-lambda/package.zip
+
+    # FetchMatchOddsLambda - workflow part
+    - name: FetchMatchOddsLambda | test
+      run: echo 'FetchMatchTrendsLambda test - TODO'
+    - name: FetchMatchOddsLambda | create zip
+      run: sh ./infra/sh/zip-lambda.sh fetch-team-lambda
+    - name: FetchMatchOddsLambda | deploy to aws (lambda)
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: eu-west-2
+        function_name: betboard-fetch-match-odds-lambda
+        zip_file: lambda/fetch-match-odds-lambda/package.zip
     
     # UpdateUiLambda - workflow part
     - name: UpdateUiLambda | test
@@ -63,4 +92,43 @@ jobs:
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_region: eu-west-2
         function_name: betboard-update-ui-lambda
-        zip_file: update-ui-lambda/package.zip
+        zip_file: lambda/update-ui-lambda/package.zip   
+    # UpdateUiLambda - workflow part
+    - name: UpdateUiLambda | test
+      run: echo 'UpdateUiLambda test - TODO'
+    - name: UpdateUiLambda | create zip
+      run: sh ./infra/sh/zip-lambda.sh update-ui-lambda
+    - name: UpdateUiLambda | deploy to aws (lambda)
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: eu-west-2
+        function_name: betboard-update-ui-lambda
+        zip_file: lambda/update-ui-lambda/package.zip   
+    # UpdateUiLambda - workflow part
+    - name: UpdateUiLambda | test
+      run: echo 'UpdateUiLambda test - TODO'
+    - name: UpdateUiLambda | create zip
+      run: sh ./infra/sh/zip-lambda.sh update-ui-lambda
+    - name: UpdateUiLambda | deploy to aws (lambda)
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: eu-west-2
+        function_name: betboard-update-ui-lambda
+        zip_file: lambda/update-ui-lambda/package.zip   
+    # UpdateUiLambda - workflow part
+    - name: UpdateUiLambda | test
+      run: echo 'UpdateUiLambda test - TODO'
+    - name: UpdateUiLambda | create zip
+      run: sh ./infra/sh/zip-lambda.sh update-ui-lambda
+    - name: UpdateUiLambda | deploy to aws (lambda)
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: eu-west-2
+        function_name: betboard-update-ui-lambda
+        zip_file: lambda/update-ui-lambda/package.zip

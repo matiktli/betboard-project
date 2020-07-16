@@ -1,0 +1,210 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Template responsible for creation of dynamo-db part",
+  "Outputs": {},
+  "Parameters": {
+    "ENV": {
+      "AllowedValues": ["prod", "sbox", "local"],
+      "Default": "prod",
+      "Description": "Enter environment name, by default prod.",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "matchTable": {
+      "Metadata": {
+        "Comment": "Table holding match data"
+      },
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "match_id",
+            "AttributeType": "N"
+          },
+          {
+            "AttributeName": "team_one_id",
+            "AttributeType": "N"
+          },
+          {
+            "AttributeName": "team_two_id",
+            "AttributeType": "N"
+          },
+          {
+            "AttributeName": "date",
+            "AttributeType": "S"
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "match_id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "GSI__team_one_id__date",
+            "KeySchema": [
+              {
+                "AttributeName": "team_one_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "date",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "NonKeyAttributes": ["match_id", "team_two_id"],
+              "ProjectionType": "INCLUDE"
+            }
+          },
+          {
+            "IndexName": "GSI__team_two_id__date",
+            "KeySchema": [
+              {
+                "AttributeName": "team_two_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "date",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "NonKeyAttributes": ["match_id", "team_one_id"],
+              "ProjectionType": "INCLUDE"
+            }
+          }
+        ],
+        "TableName": {
+          "Fn::Sub": "${ENV}-match"
+        },
+        "Tags": [
+          {
+            "Key": "project",
+            "Value": "betboard"
+          }
+        ]
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "StreamSpecification": {
+        "StreamViewType": "KEYS_ONLY"
+      }
+    },
+    "matchStatsTable": {
+      "Metadata": {
+        "Comment": "Table holding match stats data"
+      },
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "match_id",
+            "AttributeType": "N"
+          },
+          {
+            "AttributeName": "stat_type__team_id",
+            "AttributeType": "S"
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "match_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "stat_type__team_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "TableName": {
+          "Fn::Sub": "${ENV}-match-stats"
+        },
+        "Tags": [
+          {
+            "Key": "project",
+            "Value": "betboard"
+          }
+        ]
+      },
+      "Type": "AWS::DynamoDB::Table"
+    },
+    "matchTrendsTable": {
+      "Metadata": {
+        "Comment": "Table holding match trends data"
+      },
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "match_id",
+            "AttributeType": "N"
+          },
+          {
+            "AttributeName": "trend_type__team_id",
+            "AttributeType": "S"
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "match_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "trend_type__team_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "TableName": {
+          "Fn::Sub": "${ENV}-match-trends"
+        },
+        "Tags": [
+          {
+            "Key": "project",
+            "Value": "betboard"
+          }
+        ]
+      },
+      "Type": "AWS::DynamoDB::Table"
+    },
+    "matchOddsTable": {
+      "Metadata": {
+        "Comment": "Table holding match odds data"
+      },
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "match_id",
+            "AttributeType": "N"
+          },
+          {
+            "AttributeName": "odd_type__bookmaker_id",
+            "AttributeType": "S"
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "match_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "odd_type__bookmaker_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "TableName": {
+          "Fn::Sub": "${ENV}-match-odds"
+        },
+        "Tags": [
+          {
+            "Key": "project",
+            "Value": "betboard"
+          }
+        ]
+      },
+      "Type": "AWS::DynamoDB::Table"
+    }
+  }
+}
