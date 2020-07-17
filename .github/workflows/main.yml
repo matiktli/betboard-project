@@ -42,7 +42,7 @@ jobs:
       - name: FetchMatchStatsLambda | test
         run: echo 'FetchMatchStatsLambda test - TODO'
       - name: FetchMatchStatsLambda | create zip
-        run: sh ./infra/sh/zip-lambda.sh fetch-match-stats-lambda
+        run: sh ./infra/sh/zip-lambda.sh lambda/fetch-match-stats-lambda
       - name: FetchMatchStatsLambda | deploy to aws (lambda)
         uses: appleboy/lambda-action@master
         with:
@@ -56,7 +56,7 @@ jobs:
       - name: FetchMatchTrendsLambda | test
         run: echo 'FetchMatchTrendsLambda test - TODO'
       - name: FetchMatchTrendsLambda | create zip
-        run: sh ./infra/sh/zip-lambda.sh fetch-match-trends-lambda
+        run: sh ./infra/sh/zip-lambda.sh lambda/fetch-match-trends-lambda
       - name: FetchMatchTrendsLambda | deploy to aws (lambda)
         uses: appleboy/lambda-action@master
         with:
@@ -70,7 +70,7 @@ jobs:
       - name: FetchMatchOddsLambda | test
         run: echo 'FetchMatchTrendsLambda test - TODO'
       - name: FetchMatchOddsLambda | create zip
-        run: sh ./infra/sh/zip-lambda.sh fetch-match-odds-lambda
+        run: sh ./infra/sh/zip-lambda.sh lambda/fetch-match-odds-lambda
       - name: FetchMatchOddsLambda | deploy to aws (lambda)
         uses: appleboy/lambda-action@master
         with:
