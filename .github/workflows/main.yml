@@ -49,7 +49,7 @@ jobs:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_region: eu-west-2
-        function_name: betboard-fetch-match-stats-lambda
+        function_name: prod-fetch-match-stats-lambda
         zip_file: lambda/fetch-match-stats-lambda/package.zip
 
     # FetchMatchTrendsLambda - workflow part
@@ -63,7 +63,7 @@ jobs:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_region: eu-west-2
-        function_name: betboard-fetch-match-trends-lambda
+        function_name: prod-fetch-match-trends-lambda
         zip_file: lambda/fetch-match-trends-lambda/package.zip
 
     # FetchMatchOddsLambda - workflow part
@@ -77,7 +77,7 @@ jobs:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_region: eu-west-2
-        function_name: betboard-fetch-match-odds-lambda
+        function_name: prod-fetch-match-odds-lambda
         zip_file: lambda/fetch-match-odds-lambda/package.zip
     
     # UpdateUiLambda - workflow part

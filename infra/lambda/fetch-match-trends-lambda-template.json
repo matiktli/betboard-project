@@ -19,7 +19,7 @@
     }
   },
   "Resources": {
-    "fetchMatchStatsLambdaExecutionRole": {
+    "fetchMatchTrendsLambdaExecutionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -34,7 +34,7 @@
             }
           ]
         },
-        "Description": "Role for fetch-match-stats execution",
+        "Description": "Role for fetch-match-trends execution",
         "Policies": [
           {
             "PolicyDocument": {
@@ -44,7 +44,7 @@
                   "Effect": "Allow",
                   "Action": "lambda:InvokeFunction",
                   "Resource": {
-                    "Fn::Sub": "arn:aws:lambda:eu-west-2:986036696763:function:${ENV}-fetch-match-stats-lambda*"
+                    "Fn::Sub": "arn:aws:lambda:eu-west-2:986036696763:function:${ENV}-fetch-match-trends-lambda*"
                   }
                 },
                 {
@@ -89,12 +89,12 @@
               ]
             },
             "PolicyName": {
-              "Fn::Sub": "${ENV}FetchMatchStatsLambdaExecutionRolePolicyOne"
+              "Fn::Sub": "${ENV}FetchMatchTrendsLambdaExecutionRolePolicyOne"
             }
           }
         ],
         "RoleName": {
-          "Fn::Sub": "${ENV}FetchMatchStats-lambda-execution-role"
+          "Fn::Sub": "${ENV}FetchMatchTrends-lambda-execution-role"
         },
         "Tags": [
           {
@@ -104,20 +104,20 @@
         ]
       }
     },
-    "fetchMatchStatsLambda": {
+    "fetchMatchTrendsLambda": {
       "Type": "AWS::Lambda::Function",
-      "DependsOn": "fetchMatchStatsLambdaExecutionRole",
+      "DependsOn": "fetchMatchTrendsLambdaExecutionRole",
       "Properties": {
         "Code": {
           "ZipFile": "def lambda_handler(event, context): return True"
         },
-        "Description": "Lambda used to fetch match stats data",
+        "Description": "Lambda used to fetch match trends data",
         "FunctionName": {
-          "Fn::Sub": "${ENV}-fetch-match-stats-lambda"
+          "Fn::Sub": "${ENV}-fetch-match-trends-lambda"
         },
         "Handler": "lambda_function.lambda_handler",
         "Role": {
-          "Fn::GetAtt": ["fetchMatchStatsLambdaExecutionRole", "Arn"]
+          "Fn::GetAtt": ["fetchMatchTrendsLambdaExecutionRole", "Arn"]
         },
         "Runtime": "python3.8",
         "Tags": [
@@ -128,14 +128,14 @@
         ]
       }
     },
-    "fetchMatchStatsLambdaTrigger": {
+    "fetchMatchTrendsLambdaTrigger": {
       "Type": "AWS::Lambda::EventSourceMapping",
-      "DependsOn": "fetchMatchStatsLambda",
+      "DependsOn": "fetchMatchTrendsLambda",
       "Properties": {
         "BatchSize": 1,
         "EventSourceArn": { "Fn::Sub": "${TABLESTREAMARN}" },
         "FunctionName": {
-          "Fn::Sub": "${ENV}-fetch-match-stats-lambda"
+          "Fn::Sub": "${ENV}-fetch-match-trends-lambda"
         },
         "StartingPosition": "LATEST"
       }

@@ -19,7 +19,7 @@
     }
   },
   "Resources": {
-    "fetchMatchStatsLambdaExecutionRole": {
+    "fetchMatchOddsLambdaExecutionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -34,7 +34,7 @@
             }
           ]
         },
-        "Description": "Role for fetch-match-stats execution",
+        "Description": "Role for fetch-match-trends execution",
         "Policies": [
           {
             "PolicyDocument": {
@@ -44,7 +44,7 @@
                   "Effect": "Allow",
                   "Action": "lambda:InvokeFunction",
                   "Resource": {
-                    "Fn::Sub": "arn:aws:lambda:eu-west-2:986036696763:function:${ENV}-fetch-match-stats-lambda*"
+                    "Fn::Sub": "arn:aws:lambda:eu-west-2:986036696763:function:${ENV}-fetch-match-odds-lambda*"
                   }
                 },
                 {
@@ -89,12 +89,12 @@
               ]
             },
             "PolicyName": {
-              "Fn::Sub": "${ENV}FetchMatchStatsLambdaExecutionRolePolicyOne"
+              "Fn::Sub": "${ENV}FetchMatchOddsLambdaExecutionRolePolicyOne"
             }
           }
         ],
         "RoleName": {
-          "Fn::Sub": "${ENV}FetchMatchStats-lambda-execution-role"
+          "Fn::Sub": "${ENV}FetchMatchOdds-lambda-execution-role"
         },
         "Tags": [
           {
@@ -104,20 +104,20 @@
         ]
       }
     },
-    "fetchMatchStatsLambda": {
+    "fetchMatchOddsLambda": {
       "Type": "AWS::Lambda::Function",
-      "DependsOn": "fetchMatchStatsLambdaExecutionRole",
+      "DependsOn": "fetchMatchOddsLambdaExecutionRole",
       "Properties": {
         "Code": {
           "ZipFile": "def lambda_handler(event, context): return True"
         },
-        "Description": "Lambda used to fetch match stats data",
+        "Description": "Lambda used to fetch match odds data",
         "FunctionName": {
-          "Fn::Sub": "${ENV}-fetch-match-stats-lambda"
+          "Fn::Sub": "${ENV}-fetch-match-odds-lambda"
         },
         "Handler": "lambda_function.lambda_handler",
         "Role": {
-          "Fn::GetAtt": ["fetchMatchStatsLambdaExecutionRole", "Arn"]
+          "Fn::GetAtt": ["fetchMatchOddsLambdaExecutionRole", "Arn"]
         },
         "Runtime": "python3.8",
         "Tags": [
@@ -128,14 +128,14 @@
         ]
       }
     },
-    "fetchMatchStatsLambdaTrigger": {
+    "fetchMatchOddsLambdaTrigger": {
       "Type": "AWS::Lambda::EventSourceMapping",
-      "DependsOn": "fetchMatchStatsLambda",
+      "DependsOn": "fetchMatchOddsLambda",
       "Properties": {
         "BatchSize": 1,
         "EventSourceArn": { "Fn::Sub": "${TABLESTREAMARN}" },
         "FunctionName": {
-          "Fn::Sub": "${ENV}-fetch-match-stats-lambda"
+          "Fn::Sub": "${ENV}-fetch-match-odds-lambda"
         },
         "StartingPosition": "LATEST"
       }

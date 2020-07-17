@@ -16,6 +16,9 @@
         "Comment": "Table holding match data"
       },
       "Properties": {
+        "StreamSpecification": {
+          "StreamViewType": "KEYS_ONLY"
+        },
         "AttributeDefinitions": [
           {
             "AttributeName": "match_id",
@@ -87,10 +90,7 @@
           }
         ]
       },
-      "Type": "AWS::DynamoDB::Table",
-      "StreamSpecification": {
-        "StreamViewType": "KEYS_ONLY"
-      }
+      "Type": "AWS::DynamoDB::Table"
     },
     "matchStatsTable": {
       "Metadata": {
