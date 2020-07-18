@@ -1,0 +1,116 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Template responsible for creation of lambda",
+  "Outputs": {},
+  "Parameters": {
+    "ENV": {
+      "AllowedValues": ["prod", "sbox", "local"],
+      "Default": "prod",
+      "Description": "Enter environment name, by default prod.",
+      "Type": "String"
+    },
+    "TABLEARN": {
+      "Description": "Enter table arn.",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "fetchMatchesLambdaExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Description": "Role for fetch-matches execution",
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "lambda:InvokeFunction",
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:lambda:eu-west-2:986036696763:function:${ENV}-fetch-matches-lambda*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:eu-west-2:986036696763:*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:GetItem",
+                    "dynamodb:BatchGetItem",
+                    "dynamodb:Query",
+                    "dynamodb:Scan",
+                    "dynamodb:DescribeTable",
+
+                    "dynamodb:PutItem",
+                    "dynamodb:BatchWriteItem",
+
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${TABLEARN}/*"
+                  }
+                }
+              ]
+            },
+            "PolicyName": {
+              "Fn::Sub": "${ENV}FetchMatchesLambdaExecutionRolePolicyOne"
+            }
+          }
+        ],
+        "RoleName": {
+          "Fn::Sub": "${ENV}FetchMatches-lambda-execution-role"
+        },
+        "Tags": [
+          {
+            "Key": "project",
+            "Value": "betboard"
+          }
+        ]
+      }
+    },
+    "fetchMatchesLambda": {
+      "Type": "AWS::Lambda::Function",
+      "DependsOn": "fetchMatchesLambdaExecutionRole",
+      "Properties": {
+        "Code": {
+          "ZipFile": "def lambda_handler(event, context): return True"
+        },
+        "Description": "Lambda used to fetch matches",
+        "FunctionName": {
+          "Fn::Sub": "${ENV}-fetch-matches-lambda"
+        },
+        "Handler": "lambda_function.lambda_handler",
+        "Role": {
+          "Fn::GetAtt": ["fetchMatchesLambdaExecutionRole", "Arn"]
+        },
+        "Runtime": "python3.6",
+        "Tags": [
+          {
+            "Key": "project",
+            "Value": "betboard"
+          }
+        ]
+      }
+    }
+  }
+}
