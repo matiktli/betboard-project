@@ -38,6 +38,20 @@ jobs:
           AWS_REGION: "eu-west-2"
           SOURCE_DIR: "betboard-ui/build/"
 
+      # FetchMatchesLambda - workflow part
+      - name: FetchMatchesLambda | test
+        run: echo 'FetchMatchesLambda test - TODO'
+      - name: FetchMatchesLambda | create zip
+        run: sh ./infra/sh/zip-lambda.sh lambda/fetch-matches-lambda
+      - name: FetchMatchesLambda | deploy to aws (lambda)
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: eu-west-2
+          function_name: prod-fetch-matches-lambda
+          zip_file: lambda/fetch-matches-lambda/package.zip
+
       # FetchMatchStatsLambda - workflow part
       - name: FetchMatchStatsLambda | test
         run: echo 'FetchMatchStatsLambda test - TODO'
