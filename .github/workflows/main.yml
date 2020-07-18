@@ -84,7 +84,7 @@ jobs:
       - name: UpdateUiLambda | test
         run: echo 'UpdateUiLambda test - TODO'
       - name: UpdateUiLambda | create zip
-        run: sh ./infra/sh/zip-lambda.sh update-ui-lambda
+        run: sh ./infra/sh/zip-lambda.sh lambda/update-ui-lambda
       - name: UpdateUiLambda | deploy to aws (lambda)
         uses: appleboy/lambda-action@master
         with:
