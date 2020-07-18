@@ -41,8 +41,8 @@ jobs:
       # FetchMatchesLambda - workflow part
       - name: FetchMatchesLambda | build
         run: |
-        python -m pip install --upgrade pip
-        cd lambda/fetch-matches-lambda
+        python -m pip install --upgrade pip;
+        cd lambda/fetch-matches-lambda;
         if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       - name: FetchMatchesLambda | test
         run: echo 'FetchMatchesLambda test - TODO'
@@ -60,8 +60,8 @@ jobs:
       # FetchMatchStatsLambda - workflow part
       - name: FetchMatchStatsLambda | build
         run: |
-        python -m pip install --upgrade pip
-        cd lambda/fetch-match-stats-lambda
+        python -m pip install --upgrade pip;
+        cd lambda/fetch-match-stats-lambda;
         if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       - name: FetchMatchStatsLambda | test
         run: echo 'FetchMatchStatsLambda test - TODO'
@@ -79,8 +79,8 @@ jobs:
       # # FetchMatchTrendsLambda - workflow part
       # - name: FetchMatchTrendsLambda | build
       #   run: |
-      #   python -m pip install --upgrade pip
-      #   cd lambda/fetch-match-trends-lambda
+      #   python -m pip install --upgrade pip;
+      #   cd lambda/fetch-match-trends-lambda;
       #   if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       # - name: FetchMatchTrendsLambda | test
       #   run: echo 'FetchMatchTrendsLambda test - TODO'
@@ -98,8 +98,8 @@ jobs:
       # # FetchMatchOddsLambda - workflow part
       # - name: FetchMatchOddsLambda | build
       #   run: |
-      #   python -m pip install --upgrade pip
-      #   cd lambda/fetch-match-odds-lambda
+      #   python -m pip install --upgrade pip;
+      #   cd lambda/fetch-match-odds-lambda;
       #   if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       # - name: FetchMatchOddsLambda | test
       #   run: echo 'FetchMatchTrendsLambda test - TODO'
@@ -117,8 +117,8 @@ jobs:
       # UpdateUiLambda - workflow part
       - name: UpdateUiLambda | build
         run: |
-        python -m pip install --upgrade pip
-        cd lambda/update-ui-lambda
+        python -m pip install --upgrade pip;
+        cd lambda/update-ui-lambda;
         if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       - name: UpdateUiLambda | test
         run: echo 'UpdateUiLambda test - TODO'
