@@ -85,6 +85,11 @@
                   "Resource": {
                     "Fn::Sub": "${TABLEARN}/*"
                   }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["secretsmanager:GetSecretValue", "kms:Decrypt"],
+                  "Resource": "*"
                 }
               ]
             },
@@ -118,6 +123,13 @@
         "Handler": "lambda_function.lambda_handler",
         "Role": {
           "Fn::GetAtt": ["fetchMatchTrendsLambdaExecutionRole", "Arn"]
+        },
+        "Environment": {
+          "Variables": {
+            "ENV": {
+              "Fn::Sub": "${ENV}"
+            }
+          }
         },
         "Runtime": "python3.6",
         "Tags": [
