@@ -39,6 +39,11 @@ jobs:
           SOURCE_DIR: "betboard-ui/build/"
 
       # FetchMatchesLambda - workflow part
+      - name: FetchMatchesLambda | build
+        run: |
+        python -m pip install --upgrade pip
+        cd lambda/fetch-matches-lambda
+        if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       - name: FetchMatchesLambda | test
         run: echo 'FetchMatchesLambda test - TODO'
       - name: FetchMatchesLambda | create zip
@@ -53,6 +58,11 @@ jobs:
           zip_file: lambda/fetch-matches-lambda/package.zip
 
       # FetchMatchStatsLambda - workflow part
+      - name: FetchMatchStatsLambda | build
+        run: |
+        python -m pip install --upgrade pip
+        cd lambda/fetch-match-stats-lambda
+        if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       - name: FetchMatchStatsLambda | test
         run: echo 'FetchMatchStatsLambda test - TODO'
       - name: FetchMatchStatsLambda | create zip
@@ -67,6 +77,11 @@ jobs:
           zip_file: lambda/fetch-match-stats-lambda/package.zip
 
       # # FetchMatchTrendsLambda - workflow part
+      # - name: FetchMatchTrendsLambda | build
+      #   run: |
+      #   python -m pip install --upgrade pip
+      #   cd lambda/fetch-match-trends-lambda
+      #   if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       # - name: FetchMatchTrendsLambda | test
       #   run: echo 'FetchMatchTrendsLambda test - TODO'
       # - name: FetchMatchTrendsLambda | create zip
@@ -81,6 +96,11 @@ jobs:
       #     zip_file: lambda/fetch-match-trends-lambda/package.zip
 
       # # FetchMatchOddsLambda - workflow part
+      # - name: FetchMatchOddsLambda | build
+      #   run: |
+      #   python -m pip install --upgrade pip
+      #   cd lambda/fetch-match-odds-lambda
+      #   if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       # - name: FetchMatchOddsLambda | test
       #   run: echo 'FetchMatchTrendsLambda test - TODO'
       # - name: FetchMatchOddsLambda | create zip
@@ -95,6 +115,11 @@ jobs:
       #     zip_file: lambda/fetch-match-odds-lambda/package.zip
 
       # UpdateUiLambda - workflow part
+      - name: UpdateUiLambda | build
+        run: |
+        python -m pip install --upgrade pip
+        cd lambda/update-ui-lambda
+        if [ -f requirements.txt ]; then pip install -r requirements.txt -t ./; fi
       - name: UpdateUiLambda | test
         run: echo 'UpdateUiLambda test - TODO'
       - name: UpdateUiLambda | create zip
