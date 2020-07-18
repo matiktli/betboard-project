@@ -119,7 +119,7 @@
         "Role": {
           "Fn::GetAtt": ["fetchMatchOddsLambdaExecutionRole", "Arn"]
         },
-        "Runtime": "python3.8",
+        "Runtime": "python3.6",
         "Tags": [
           {
             "Key": "project",
