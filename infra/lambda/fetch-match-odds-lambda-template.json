@@ -1,7 +1,17 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Template responsible for creation of lambda",
-  "Outputs": {},
+  "Outputs": {
+    "fetchMatchOddsLambdaArn": {
+      "Description": "ARN of the fetch-match-odds-lambda",
+      "Value": { "Fn::GetAtt": ["fetchMatchOddsLambda", "Arn"] },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${ENV}-fetch-match-odds-lambda-ARN"
+        }
+      }
+    }
+  },
   "Parameters": {
     "ENV": {
       "AllowedValues": ["prod", "sbox", "local"],
@@ -65,7 +75,17 @@
                     "dynamodb:ListStreams"
                   ],
                   "Resource": {
-                    "Fn::Sub": "${TABLEARN}/stream/*"
+                    "Fn::Join": [
+                      "",
+                      [
+                        {
+                          "Fn::ImportValue": {
+                            "Fn::Sub": "${ENV}-match-table-ARN"
+                          }
+                        },
+                        "/stream/*"
+                      ]
+                    ]
                   }
                 },
                 {
@@ -83,7 +103,17 @@
                     "dynamodb:UpdateItem"
                   ],
                   "Resource": {
-                    "Fn::Sub": "${TABLEARN}/*"
+                    "Fn::Join": [
+                      "",
+                      [
+                        {
+                          "Fn::ImportValue": {
+                            "Fn::Sub": "${ENV}-match-table-ARN"
+                          }
+                        },
+                        "*"
+                      ]
+                    ]
                   }
                 },
                 {
@@ -145,7 +175,11 @@
       "DependsOn": "fetchMatchOddsLambda",
       "Properties": {
         "BatchSize": 1,
-        "EventSourceArn": { "Fn::Sub": "${TABLESTREAMARN}" },
+        "EventSourceArn": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${ENV}-match-table-stream-ARN"
+          }
+        },
         "FunctionName": {
           "Fn::Sub": "${ENV}-fetch-match-odds-lambda"
         },

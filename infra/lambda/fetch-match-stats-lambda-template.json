@@ -1,20 +1,22 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Template responsible for creation of lambda",
-  "Outputs": {},
+  "Outputs": {
+    "fetchMatchStatsLambdaArn": {
+      "Description": "ARN of the fetch-match-stats-lambda",
+      "Value": { "Fn::GetAtt": ["fetchMatchStatsLambda", "Arn"] },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${ENV}-fetch-match-stats-lambda-ARN"
+        }
+      }
+    }
+  },
   "Parameters": {
     "ENV": {
       "AllowedValues": ["prod", "sbox", "local"],
       "Default": "prod",
       "Description": "Enter environment name, by default prod.",
-      "Type": "String"
-    },
-    "TABLEARN": {
-      "Description": "Enter table arn for source of events.",
-      "Type": "String"
-    },
-    "TABLESTREAMARN": {
-      "Description": "Enter latest table stream arn for source of events.",
       "Type": "String"
     }
   },
@@ -65,7 +67,17 @@
                     "dynamodb:ListStreams"
                   ],
                   "Resource": {
-                    "Fn::Sub": "${TABLEARN}/stream/*"
+                    "Fn::Join": [
+                      "",
+                      [
+                        {
+                          "Fn::ImportValue": {
+                            "Fn::Sub": "${ENV}-match-table-ARN"
+                          }
+                        },
+                        "/stream/*"
+                      ]
+                    ]
                   }
                 },
                 {
@@ -83,7 +95,17 @@
                     "dynamodb:UpdateItem"
                   ],
                   "Resource": {
-                    "Fn::Sub": "${TABLEARN}/*"
+                    "Fn::Join": [
+                      "",
+                      [
+                        {
+                          "Fn::ImportValue": {
+                            "Fn::Sub": "${ENV}-match-table-ARN"
+                          }
+                        },
+                        "*"
+                      ]
+                    ]
                   }
                 },
                 {
@@ -145,7 +167,11 @@
       "DependsOn": "fetchMatchStatsLambda",
       "Properties": {
         "BatchSize": 1,
-        "EventSourceArn": { "Fn::Sub": "${TABLESTREAMARN}" },
+        "EventSourceArn": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${ENV}-match-table-stream-ARN"
+          }
+        },
         "FunctionName": {
           "Fn::Sub": "${ENV}-fetch-match-stats-lambda"
         },

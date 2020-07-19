@@ -1,7 +1,53 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Template responsible for creation of dynamo-db part",
-  "Outputs": {},
+  "Outputs": {
+    "matchTableArn": {
+      "Description": "ARN of the match table",
+      "Value": { "Fn::GetAtt": ["matchTable", "Arn"] },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${ENV}-match-table-ARN"
+        }
+      }
+    },
+    "matchStatsTableArn": {
+      "Description": "ARN of the match-stats table",
+      "Value": { "Fn::GetAtt": ["matchStatsTable", "Arn"] },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${ENV}-match-stats-table-ARN"
+        }
+      }
+    },
+    "matchTrendsTableArn": {
+      "Description": "ARN of the match-trends table",
+      "Value": { "Fn::GetAtt": ["matchTrendsTable", "Arn"] },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${ENV}-match-trends-table-ARN"
+        }
+      }
+    },
+    "matchOddsTableArn": {
+      "Description": "ARN of the match-odds table",
+      "Value": { "Fn::GetAtt": ["matchOddsTable", "Arn"] },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${ENV}-match-odds-table-ARN"
+        }
+      }
+    },
+    "matchTableStreamArn": {
+      "Description": "ARN of the match table stream",
+      "Value": { "Fn::GetAtt": ["matchTable", "StreamArn"] },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${ENV}-match-table-stream-ARN"
+        }
+      }
+    }
+  },
   "Parameters": {
     "ENV": {
       "AllowedValues": ["prod", "sbox", "local"],

@@ -1,16 +1,22 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Template responsible for creation of lambda",
-  "Outputs": {},
+  "Outputs": {
+    "fetchMatchesLambdaArn": {
+      "Description": "ARN of the fetch-matches-lambda",
+      "Value": { "Fn::GetAtt": ["fetchMatchesLambda", "Arn"] },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${ENV}-fetch-matches-lambda-ARN"
+        }
+      }
+    }
+  },
   "Parameters": {
     "ENV": {
       "AllowedValues": ["prod", "sbox", "local"],
       "Default": "prod",
       "Description": "Enter environment name, by default prod.",
-      "Type": "String"
-    },
-    "TABLEARN": {
-      "Description": "Enter table arn.",
       "Type": "String"
     }
   },
@@ -67,7 +73,17 @@
                     "dynamodb:UpdateItem"
                   ],
                   "Resource": {
-                    "Fn::Sub": "${TABLEARN}/*"
+                    "Fn::Join": [
+                      "",
+                      [
+                        {
+                          "Fn::ImportValue": {
+                            "Fn::Sub": "${ENV}-match-table-ARN"
+                          }
+                        },
+                        "*"
+                      ]
+                    ]
                   }
                 },
                 {
