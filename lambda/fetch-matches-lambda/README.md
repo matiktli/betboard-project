@@ -43,6 +43,6 @@ Where league_id:
 Execution:
 ```
 aws lambda invoke \
---function-name fetch-match-stats-lambda \
+--function-name fetch-matches-lambda \
 --payload "<EVENT_JSON>" outfile.txt
 ```
