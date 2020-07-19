@@ -42,7 +42,7 @@ jobs:
       - name: FetchMatchesLambda | build
         run: |
           python -m pip install --upgrade pip
-          if [ -f lambda/fetch-matches-lambda/requirements.txt ]; then pip install -r lambda/fetch-matches-lambda/requirements.txt -t ./lambda/fetch-matches-lambda/; fi
+          if [ -f lambda/fetch-matches-lambda/requirements.txt ]; then pip install -r lambda/fetch-matches-lambda/requirements.txt -t ./lambda/fetch-matches-lambda; fi
       - name: FetchMatchesLambda | test
         run: echo 'FetchMatchesLambda test - TODO'
       - name: FetchMatchesLambda | create zip
