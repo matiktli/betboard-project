@@ -17,7 +17,7 @@
       },
       "Properties": {
         "StreamSpecification": {
-          "StreamViewType": "KEYS_ONLY"
+          "StreamViewType": "NEW_IMAGE"
         },
         "AttributeDefinitions": [
           {
