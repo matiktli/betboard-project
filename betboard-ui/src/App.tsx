@@ -1,16 +1,14 @@
 import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import { curveCatmullRom } from "d3-shape";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Navbar, Nav } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   XYPlot,
   XAxis,
   YAxis,
   HorizontalGridLines,
-  VerticalGridLines,
   LineSeries,
 } from "react-vis";
 import json_data from "./resources/data/test.json";
