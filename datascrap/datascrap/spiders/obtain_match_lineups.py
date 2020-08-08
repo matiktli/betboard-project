@@ -21,8 +21,9 @@ class ObtainMatchLineupsSpider():
     name = 'match_lineups_spider'
     allowed_domains = ['football-lineups.com']
 
-    def __init__(self, urls):
-        self.urls = urls
+    def __init__(self, dates, fifa_no):
+        self.dates = dates
+        self.fifa_no = fifa_no
         self.driver = webdriver.Firefox()
 
     def __del__(self):
@@ -133,16 +134,79 @@ class ObtainMatchLineupsSpider():
             sub_players_result.append(sub_player_result)
         return main_players_result, sub_players_result
 
-    def start_requests(self):
-        for url in self.urls:
-            self.driver.get(url)
-            home_lineup_ele = self.driver.find_element_by_xpath(
-                '/html/body/div[5]/section/section/div/div/div/div/div[1]/div[1]/article/header/div/a[1]/div/div[2]')
-            home_lineup = home_lineup_ele.text
+    def __create_date_url(self, date):
+        url_date_part = str(date.year) + str(date.month if date.month >= 10 else "0" + str(
+            date.month)) + str(date.day if date.day >= 10 else "0" + str(date.day))
+        return f'https://www.espn.com/soccer/fixtures/_/date/{url_date_part}/league/eng.1'
 
-            away_lineup_ele = self.driver.find_element_by_xpath(
+    def __obtain_game_urls_from_date(self, date_url, date, is_recovery):
+        try:
+            self.__get_url_with_retry(date_url)
+            game_links_elements = self.driver.find_elements_by_xpath(
+                './/html/body/div[5]/section/section/div/section/div[1]/div/div[2]/div/table/tbody/tr/td[1]/span[2]/a')
+            result = []
+            for game_link_ele in game_links_elements:
+                game_url = game_link_ele.get_attribute(
+                    'href').replace('report', 'match')
+                result.append(game_url)
+            return result
+        except Exception as ex:
+            if is_recovery:
+                raise ex
+            self.write_exception(date_url, date, ex)
+            return []
+
+    def __get_url_with_retry(self, url, retry_times=3):
+        for i in range(0, retry_times):
+            try:
+                self.driver.get(url)
+                time.sleep(2.5)
+                page_error_text = self.driver.find_element_by_xpath(
+                    '/html/body/div[4]/section/section/div/section/header/h1').get_attribute("textContent")
+                if page_error_text != 'Page error.':
+                    # Means we are not on error page that is fine
+                    return
+                else:
+                    print('we are on error page')
+            except Exception as ex:
+                # Means we could not get the error page object and we fine
+                return
+        # Means that we gone through all retries and still hitting error page
+        raise Exception(
+            f'Tried: {retry_times} with url: {url} without success...')
+
+    def save_data(self, data):
+        print(
+            f'[F_{self.fifa_no}]Saving match from {data[1]}: {data[3]} vs {data[4]}')
+        with open(f'results/match_stats/match_and_players_{self.fifa_no}.csv', 'a', newline='') as f:
+            w = csv.writer(f)
+            w.writerow(data)
+
+    def write_exception(self, url, date, ex):
+        print(
+            f'[F_{self.fifa_no}] ERROR while: Saving match: {url}')
+        with open(f'results/match_stats/errors/match_and_players_{self.fifa_no}.csv', 'a', newline='') as f:
+            w = csv.writer(f)
+            w.writerow([url, date, str(ex)])
+
+    def __get_element_text_with_retry(self, xpath, retry_times=3):
+        home_lineup_ele = self.driver.find_element_by_xpath(xpath)
+        for i in range(0, retry_times):
+            if home_lineup_ele != None and home_lineup_ele.get_attribute("textContent") != None:
+                return home_lineup_ele.get_attribute("textContent")
+            else:
+                time.sleep(0.5 * i)
+        raise Exception(
+            f'Could not obtain element: {xpath} after {retry_times}.')
+
+    def obtain_all_for_match_url(self, match_url, date, is_recovery=False):
+        try:
+            self.__get_url_with_retry(match_url)
+            home_lineup = self.__get_element_text_with_retry(
+                '/html/body/div[5]/section/section/div/div/div/div/div[1]/div[1]/article/header/div/a[1]/div/div[2]')
+
+            away_lineup = self.__get_element_text_with_retry(
                 '/html/body/div[5]/section/section/div/div/div/div/div[1]/div[1]/article/header/div/a[2]/div/div[2]')
-            away_lineup = away_lineup_ele.text
 
             home_squad_table = self.driver.find_element_by_xpath(
                 '/html/body/div[5]/section/section/div/div/div/div/div[1]/div[1]/article/div/div[1]/div/div/div/table/tbody[1]')
@@ -162,22 +226,40 @@ class ObtainMatchLineupsSpider():
             self.__add_sub_players_left(
                 away_subplayers_data, away_subsquad_table)
 
-            venue_name = str(self.driver.find_element_by_xpath(
-                '/html/body/div[5]/section/section/div/div/div/div/div[1]/div[2]/article/div/ul[1]/li/div').text).replace('VENUE: ', '')
+            venue_name = str(self.__get_element_text_with_retry(
+                '/html/body/div[5]/section/section/div/div/div/div/div[1]/div[2]/article/div/ul[1]/li/div')).replace('VENUE: ', '')
 
-            date = str(self.driver.find_element_by_xpath(
-                '/html/head/title').get_attribute("textContent")).replace(' - ESPN', '')
-            date = date[date.rfind('-') + 2:]
+            match_date = str(self.__get_element_text_with_retry(
+                '/html/head/title')).replace(' - ESPN', '')
+            match_date = match_date[match_date.rfind('-') + 2:]
 
-            print('URL: ', url)
-            print('DATE: ', date)
-            print('VENUE: ', venue_name)
-            print('HOME-lineup: ', home_lineup)
-            print('AWAY-lineup: ', away_lineup)
-            print('HOME-players: ', home_players_data)
-            print('AWAY-players: ', away_players_data)
-            print('HOME-subplayers: ', home_subplayers_data)
-            print('AWAY-subplayers: ', away_subplayers_data)
+            home_team_name = self.__get_element_text_with_retry(
+                '/html/body/div[5]/section/div[1]/header/div[2]/div[1]/div/div[2]/div[1]/div/a/span[2]')
+            away_team_name = self.__get_element_text_with_retry(
+                '/html/body/div[5]/section/div[1]/header/div[2]/div[3]/div/div[3]/div[2]/div/a/span[2]')
+
+            data_to_save = [match_url, match_date, venue_name, home_team_name, away_team_name, home_lineup,
+                            away_lineup, home_players_data, away_players_data, home_subplayers_data, away_subplayers_data]
+            if all(v is not None for v in data_to_save):
+                self.save_data(data_to_save)
+            else:
+                raise Exception("Object not full error")
+        except Exception as ex:
+            if is_recovery:
+                raise ex
+            else:
+                self.write_exception(match_url, date, ex)
+
+    def obtain_all_for_date_url(self, date_url, date, is_recovery=False):
+        match_urls_for_date = self.__obtain_game_urls_from_date(
+            date_url, date, is_recovery)
+        for url in match_urls_for_date:
+            self.obtain_all_for_match_url(url, date)
+
+    def start_requests(self):
+        for date in self.dates:
+            date_url = self.__create_date_url(date)
+            self.obtain_all_for_date_url(date_url, date)
 
 
 class SpiderRunner():
@@ -197,24 +279,123 @@ class SpiderRunner():
                         result.append([row[1], row[2], row[3]])
         return result
 
-    def __all_mondays(self, year):
+    def __all_mondays(self, year, date_range=None):
         before = datetime.datetime(year-1, 8, 2)
-        after = datetime.datetime(year+1, 6, 22)
+        after = datetime.datetime(year + 1, 6, 22)
+        if date_range:
+            before, after = date_range[0], date_range[1]
         rr = rrule.rrule(
             rrule.WEEKLY, byweekday=relativedelta.SU, dtstart=before)
         return rr.between(before, after, inc=True)
 
-    def __init__(self, fifa_no, spider_obj):
+    def __init__(self, fifa_no, spider_obj, date_range=None):
         self.fifa_no = fifa_no
         self.spider_model = spider_obj
-        self.dates = self.__all_mondays(int('20' + str(fifa_no)))
-        print(self.dates[0])
+        self.dates = self.__all_mondays(int('20' + str(fifa_no)), date_range)
 
-    def run_single(self):
-        spider = self.spider_model(
-            ['https://www.espn.com/soccer/match?gameId=422655'])
+    def run_single(self, dates=None):
+        if dates == None:
+            dates = self.dates
+        spider = self.spider_model(dates, self.fifa_no)
         spider.start_requests()
 
 
-runner = SpiderRunner(16, ObtainMatchLineupsSpider)
-# runner.run_single()
+def all_mondays_between(before, after):
+    rr = rrule.rrule(rrule.WEEKLY, byweekday=relativedelta.SU, dtstart=before)
+    return rr.between(before, after, inc=True)
+
+
+class RecoverySpiderRunner():
+
+    def __init__(self, fifa_no, spider_obj):
+        self.fifa_no = fifa_no
+        self.spider_model = spider_obj
+
+    def __get_first_from_csv(self):
+        first_row = None
+        with open(f'results/match_stats/errors/match_and_players_{self.fifa_no}.csv', 'r') as f1, open(f'results/match_stats/errors/match_and_players_{self.fifa_no}_updated.csv', 'w') as f2:
+            r = csv.reader(f1)
+            for i, line in enumerate(r):
+                if line == None:
+                    return None
+                if i == 0:
+                    first_row = line
+                else:
+                    csv.writer(f2).writerow(line)
+        os.remove(
+            f'results/match_stats/errors/match_and_players_{self.fifa_no}.csv')
+        os.rename(
+            f'results/match_stats/errors/match_and_players_{self.fifa_no}_updated.csv', f'results/match_stats/errors/match_and_players_{self.fifa_no}.csv')
+        return first_row
+
+    def __write_row_back(self, row):
+        with open(f'results/match_stats/errors/match_and_players_{self.fifa_no}.csv', 'a', newline='') as f:
+            csv.writer(f).writerow(row)
+
+    def run_single(self):
+        spider = self.spider_model(None, self.fifa_no)
+        row = self.__get_first_from_csv()
+        while row != None:
+            url, date = row[0], row[1]
+            try:
+                if 'fixtures/_/date' in url:
+                    spider.obtain_all_for_date_url(url, date, is_recovery=True)
+                elif 'match?gameId' in url:
+                    spider.obtain_all_for_match_url(
+                        url, date, is_recovery=True)
+                else:
+                    raise Exception('Unrecognised format')
+            except Exception as ex:
+                if 'Browsing context has been discarded' in str(ex):
+                    print('terminated...')
+                    exit()
+                print(
+                    f'[F_{self.fifa_no}]Error while processing: {row[0]}, adding back to file. \n\tEx: {ex}')
+                self.__write_row_back(row)
+            finally:
+                row = self.__get_first_from_csv()
+
+
+# runner = SpiderRunner(16, ObtainMatchLineupsSpider)
+# start_16, end_16 = datetime.datetime(
+#     2015, 8, 2), datetime.datetime(2016, 5, 18)
+# runner.run_single(all_mondays_between(start_16, end_16))
+# print('done_16')
+# recovery = RecoverySpiderRunner(16, ObtainMatchLineupsSpider)
+# recovery.run_single()
+
+# runner = SpiderRunner(17, ObtainMatchLineupsSpider)
+# start_17, end_17 = datetime.datetime(
+#     2016, 8, 8), datetime.datetime(2017, 5, 22)
+# runner.run_single(all_mondays_between(start_17, end_17))
+# print('done_17')
+# recovery = RecoverySpiderRunner(17, ObtainMatchLineupsSpider)
+# recovery.run_single()
+
+runner = SpiderRunner(18, ObtainMatchLineupsSpider)
+start_18, end_18 = datetime.datetime(
+    2017, 8, 7), datetime.datetime(2018, 5, 14)
+runner.run_single(all_mondays_between(start_18, end_18))
+print('done_18')
+# recovery = RecoverySpiderRunner(18, ObtainMatchLineupsSpider)
+# recovery.run_single()
+
+# runner = SpiderRunner(19, ObtainMatchLineupsSpider)
+# start_19, end_19 = datetime.datetime(
+#     2018, 8, 6), datetime.datetime(2019, 5, 13)
+# runner.run_single(all_mondays_between(start_19, end_19))
+# print('done_19')
+# recovery = RecoverySpiderRunner(19, ObtainMatchLineupsSpider)
+# recovery.run_single()
+
+# runner = SpiderRunner(20, ObtainMatchLineupsSpider)
+# start_20, end_20 = datetime.datetime(
+#     2019, 8, 5), datetime.datetime(2020, 3, 10)
+# runner.run_single(all_mondays_between(start_20, end_20))
+# print('done_20_v1')
+
+# runner = SpiderRunner(20, ObtainMatchLineupsSpider)
+# start_20, end_20 = datetime.datetime(
+#     2020, 6, 15), datetime.datetime(2020, 7, 27)
+# runner.run_single(all_mondays_between(start_20, end_20))
+# print('done_20_v2')
